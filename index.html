@@ -19,73 +19,90 @@
   </head>
   <body>
     <header class="site-header" data-site-header>
-      <a class="brand" href="#top" aria-label="Neil Patrick Potot portfolio home">
-        <span class="brand-mark">NP</span>
-        <span>
-          <strong>Neil Patrick Potot</strong>
-          <small>Technical Lead / Solutions Architect</small>
-        </span>
-      </a>
-      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="primary-nav" data-nav-toggle>
-        <span></span>
-        <span></span>
-        <span></span>
-        <span class="sr-only">Menu</span>
-      </button>
-      <nav class="primary-nav" id="primary-nav" data-primary-nav>
-        <a href="#case-study">Case Study</a>
-        <a href="#systems">Systems</a>
-        <a href="#evidence">Evidence</a>
-        <a href="#contact">Contact</a>
-      </nav>
+      <div class="header-inner">
+        <a class="brand" href="#top" aria-label="Neil Patrick Potot portfolio home">
+          <span class="brand-mark">NP</span>
+          <span>
+            <strong>Neil Patrick Potot</strong>
+            <small>Technical Lead / Solutions Architect</small>
+          </span>
+        </a>
+        <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="primary-nav" data-nav-toggle>
+          <span></span>
+          <span></span>
+          <span></span>
+          <span class="sr-only">Menu</span>
+        </button>
+        <nav class="primary-nav" id="primary-nav" data-primary-nav>
+          <a href="#capabilities">Capabilities</a>
+          <a href="#case-study">Case Study</a>
+          <a href="#systems">Systems</a>
+          <a href="#evidence">Evidence</a>
+          <a href="#contact">Contact</a>
+        </nav>
+      </div>
     </header>
 
     <main id="top">
       <section class="hero" aria-labelledby="hero-title">
-        <img class="hero-bg" src="assets/jobtracker-preview.png" alt="JobTracker product dashboard preview">
-        <div class="hero-overlay"></div>
-        <div class="hero-content">
-          <p class="eyebrow">Portfolio for technical leadership and solution architecture</p>
-          <h1 id="hero-title">Neil Patrick Potot</h1>
-          <p class="hero-copy">
-            I build practical software systems that connect product intent, design discipline,
-            backend boundaries, deployment quality, and measurable delivery.
-          </p>
-          <div class="hero-actions" aria-label="Primary actions">
-            <a class="button primary" href="#case-study">View JobTracker</a>
-            <a class="button secondary" href="https://github.com/Nei1eveN" rel="noreferrer">GitHub</a>
+        <div class="hero-inner">
+          <div class="hero-content">
+            <p class="eyebrow">Technical Leadership & Architecture</p>
+            <h1 id="hero-title">Neil Patrick Potot</h1>
+            <p class="hero-copy">
+              I build practical software systems that connect product intent, design discipline,
+              backend boundaries, deployment quality, and measurable delivery.
+            </p>
+            <div class="hero-actions" aria-label="Primary actions">
+              <a class="button primary" href="#case-study">View Case Study</a>
+              <a class="button secondary" href="https://github.com/Nei1eveN" rel="noreferrer">GitHub Profile</a>
+              <a class="button secondary" href="assets/Neil-Patrick-Potot-CV-2026.pdf" download>
+                Download CV
+              </a>
+            </div>
+          </div>
+          <div class="hero-media">
+            <img src="assets/jobtracker-preview.png" alt="JobTracker product dashboard preview">
           </div>
         </div>
       </section>
 
-      <section class="section intro-band" aria-labelledby="positioning-title">
+      <section class="section" id="capabilities" aria-labelledby="capabilities-title">
         <div class="section-inner split">
           <div>
-            <p class="eyebrow">Positioning</p>
-            <h2 id="positioning-title">A portfolio centered on proof, not claims.</h2>
+            <p class="eyebrow">Selected Capabilities</p>
+            <h2 id="capabilities-title">What I bring to a team</h2>
           </div>
-          <p>
-            This site is meant to support Technical Lead and Solutions Architect conversations:
-            what was built, why boundaries exist, how quality was verified, and which tradeoffs
-            remain explicit.
-          </p>
+          <div class="capabilities-list">
+            <p>
+              My focus is on end-to-end system ownership—from initial architecture to deployed regression coverage.
+            </p>
+            <ul class="tag-list" aria-label="Technical focus areas">
+              <li>Full-Stack Architecture</li>
+              <li>Expo & React Native Web</li>
+              <li>Supabase & RLS</li>
+              <li>Playwright & E2E Verification</li>
+              <li>AI-Assisted Workflows</li>
+              <li>Source-Backed Delivery</li>
+            </ul>
+          </div>
         </div>
       </section>
 
-      <section class="section" id="case-study" aria-labelledby="case-study-title">
+      <section class="section muted" id="case-study" aria-labelledby="case-study-title">
         <div class="section-inner">
           <div class="section-heading">
             <p class="eyebrow">Featured case study</p>
             <h2 id="case-study-title">JobTracker - Job Application CRM</h2>
-            <p>
+            <p class="heading-sub">
               A full-stack job-search workspace built with Expo, Supabase, AI-assisted workflows,
               public ATS source discovery, and deployed alpha regression coverage.
             </p>
           </div>
 
           <article class="feature-layout">
-            <div class="feature-media">
-              <img src="assets/jobtracker-preview.png" alt="JobTracker alpha interface preview">
+            <div class="feature-media-container">
+              <img src="assets/jobtracker-preview.png" alt="JobTracker alpha interface preview" class="feature-image">
             </div>
             <div class="feature-panel">
               <div class="status-row">
@@ -124,9 +141,9 @@
         </div>
       </section>
 
-      <section class="section muted" id="systems" aria-labelledby="systems-title">
+      <section class="section" id="systems" aria-labelledby="systems-title">
         <div class="section-inner">
-          <div class="section-heading">
+          <div class="section-heading text-center">
             <p class="eyebrow">Architecture habits</p>
             <h2 id="systems-title">How I approach systems work</h2>
           </div>
@@ -159,24 +176,28 @@
         </div>
       </section>
 
-      <section class="section" id="evidence" aria-labelledby="evidence-title">
+      <section class="section muted" id="evidence" aria-labelledby="evidence-title">
         <div class="section-inner">
-          <div class="section-heading">
+          <div class="section-heading text-center">
             <p class="eyebrow">Evidence</p>
             <h2 id="evidence-title">Signals worth reviewing</h2>
           </div>
           <div class="evidence-list">
             <a class="evidence-item" href="https://github.com/Nei1eveN/job-application-crm/blob/main/docs/CASE_STUDY.md" rel="noreferrer">
-              <span>Case study</span>
+              <span class="evidence-label">Case study</span>
               <strong>Architecture, scope, tradeoffs, and leadership framing</strong>
             </a>
             <a class="evidence-item" href="https://github.com/Nei1eveN/job-application-crm/blob/main/docs/V28_ALPHA_READINESS.md" rel="noreferrer">
-              <span>Alpha readiness</span>
+              <span class="evidence-label">Alpha readiness</span>
               <strong>Verification gates, deployed checks, and known limitations</strong>
             </a>
             <a class="evidence-item" href="https://github.com/Nei1eveN/job-application-crm/blob/main/AGENTS.md" rel="noreferrer">
-              <span>Guardrails</span>
+              <span class="evidence-label">Guardrails</span>
               <strong>Repo-specific rules for source-backed implementation</strong>
+            </a>
+            <a class="evidence-item" href="assets/Neil-Patrick-Potot-CV-2026.pdf" download>
+              <span class="evidence-label">CV</span>
+              <strong>Public resume for Technical Lead / Mobile Solutions Architect roles</strong>
             </a>
           </div>
         </div>
@@ -186,7 +207,7 @@
         <div class="section-inner contact-layout">
           <div>
             <p class="eyebrow">Contact</p>
-            <h2 id="contact-title">Open to technical leadership and architecture conversations.</h2>
+            <h2 id="contact-title">Open to technical leadership conversations.</h2>
             <p>
               The best starting point is the JobTracker case study and repository history.
               From there, I can walk through decisions, constraints, and implementation details.
@@ -197,14 +218,19 @@
             <a class="button secondary" href="https://github.com/Nei1eveN/job-application-crm" rel="noreferrer">
               JobTracker repo
             </a>
+            <a class="button secondary" href="assets/Neil-Patrick-Potot-CV-2026.pdf" download>
+              Download CV
+            </a>
           </div>
         </div>
       </section>
     </main>
 
     <footer class="site-footer">
-      <span>© 2026 Neil Patrick Potot</span>
-      <a href="#top">Back to top</a>
+      <div class="footer-inner">
+        <span>© 2026 Neil Patrick Potot</span>
+        <a href="#top" class="back-to-top">Back to top</a>
+      </div>
     </footer>
 
     <script src="script.js"></script>

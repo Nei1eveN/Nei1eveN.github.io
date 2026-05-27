@@ -20,3 +20,4 @@ Use this repository as `Nei1eveN.github.io`. GitHub Pages will serve `index.html
 
 - JobTracker alpha: https://job-application-crm--alpha.expo.app
 - JobTracker repository: https://github.com/Nei1eveN/job-application-crm
+- Public CV: assets/Neil-Patrick-Potot-CV-2026.pdf

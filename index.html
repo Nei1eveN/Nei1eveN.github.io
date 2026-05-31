@@ -25,6 +25,7 @@
         </button>
         <nav class="primary-nav" id="primary-nav" data-primary-nav>
           <a href="#case-study">Case Study</a>
+          <a href="#smart-leads">Smart Leads</a>
           <a href="#proof">Proof</a>
           <a href="#capabilities">Capabilities</a>
           <a href="#resume">Resume</a>
@@ -74,6 +75,7 @@
             <li>Playwright & E2E Verification</li>
             <li>AI-Assisted Workflows</li>
             <li>Source-Backed Delivery</li>
+            <li>Agentic Delivery Systems</li>
           </ul>
         </div>
       </section>
@@ -94,34 +96,63 @@
               </div>
               <h3 class="subsection-title">From volatile product direction to governed implementation slices.</h3>
               <p class="subsection-copy">
-                JobTracker demonstrates source-backed UI implementation, Supabase data boundaries, server-side AI integrations, public ATS source setup, and end-to-end verification.
+                JobTracker demonstrates source-backed UI implementation, Supabase data boundaries, Smart Leads opportunity prioritization, review-safe AI boundaries, and end-to-end alpha verification.
               </p>
               <div class="metric-grid">
                 <div class="metric-item">
                   <span class="metric-label">Stack</span>
-                  <span class="metric-value">Expo, React Native Web, Supabase, Playwright</span>
+                  <span class="metric-value">Expo, React Native Web, Supabase, Edge Functions, Cloudflare, Playwright</span>
                 </div>
                 <div class="metric-item">
-                  <span class="metric-label">Scope</span>
-                  <span class="metric-value">Discovery, Leads, Pipeline, Tasks, Companies, Materials, Settings</span>
+                  <span class="metric-label">Product scope</span>
+                  <span class="metric-value">Discovery, Lead Review, Pipeline, Tasks, Companies, Materials, Settings</span>
                 </div>
                 <div class="metric-item">
-                  <span class="metric-label">Architecture stance</span>
-                  <span class="metric-value">Review-first automation, RLS-backed data access, Edge Function secrets</span>
+                  <span class="metric-label">Main feature</span>
+                  <span class="metric-value">Smart Leads recommendations for apply now, warm lead, ask first, save for later, skip, or high risk</span>
+                </div>
+                <div class="metric-item">
+                  <span class="metric-label">Safety stance</span>
+                  <span class="metric-value">Review-first automation, no auto-apply, no auto-message, no auto-convert</span>
                 </div>
               </div>
               <div class="action-row">
-                <a class="button outline" href="https://job-application-crm--alpha.expo.app" rel="noreferrer">Open alpha</a>
-                <span class="action-note">Repository available on request while the alpha undergoes public-readiness review.</span>
+                <a class="button outline" href="https://alpha.tryjobtracker.app" rel="noreferrer">Open alpha</a>
+                <span class="action-note">Repository available on request while public-readiness review continues.</span>
               </div>
             </div>
+          </div>
+
+          <div class="case-feature-grid" id="smart-leads" aria-label="JobTracker alpha feature summary">
+            <article class="feature-panel feature-panel-wide">
+              <span class="proof-label">Smart Leads</span>
+              <h3 class="subsection-title">Opportunity prioritization without automatic applications or outreach.</h3>
+              <p>
+                Smart Leads turns saved job and profile context into reviewable recommendations: apply now, warm lead, ask first, save for later, skip, or high risk. The feature helps decide what deserves attention first while keeping every application, message, and conversion under explicit human review.
+              </p>
+            </article>
+            <article class="feature-panel">
+              <span class="proof-label">Guardrails</span>
+              <ul class="check-list">
+                <li>No auto-apply.</li>
+                <li>No auto-message.</li>
+                <li>No auto-convert.</li>
+                <li>Human review remains explicit.</li>
+              </ul>
+            </article>
+            <article class="feature-panel">
+              <span class="proof-label">Delivery model</span>
+              <p>
+                The project uses a tracker-driven supervisor/worker workflow: approved tickets, Product Steward review, Agentic Review Board evidence, Merge Captain handoff, and post-merge continuation from durable docs.
+              </p>
+            </article>
           </div>
 
           <div class="case-narrative" id="proof">
             <div class="narrative-intro">
               <h3 class="subsection-title">What this case study is meant to prove.</h3>
               <p class="subsection-copy">
-                JobTracker is not positioned as a visual demo alone. It is a proof of how I turn an ambiguous product idea into a governed alpha: design-source alignment, data model decisions, secure backend integration, testable workflows, and clear tradeoffs.
+                JobTracker is not positioned as a visual demo alone. It is a proof of how I turn an ambiguous product idea into a governed alpha: design-source alignment, Smart Leads product decisions, secure backend integration, testable workflows, and clear tradeoffs.
               </p>
             </div>
             <div class="proof-grid">
@@ -133,12 +164,12 @@
               <article class="proof-card">
                 <span class="proof-label">CTO signal</span>
                 <h4>Architecture judgment under real constraints</h4>
-                <p>Implementation decisions cover auth, RLS, Edge Functions, storage, source integration boundaries, regression testing, and controlled alpha mocks.</p>
+                <p>Implementation decisions cover auth, RLS, Edge Functions, storage, source integration boundaries, regression testing, and restricted-data guardrails.</p>
               </article>
               <article class="proof-card">
                 <span class="proof-label">Founder signal</span>
                 <h4>Product execution from ambiguity to alpha</h4>
-                <p>The product moves from design exploration into deployed workflows, backend-backed behavior, source compliance, and a roadmap for commercialization.</p>
+                <p>The product moves from design exploration into deployed workflows, backend-backed behavior, source compliance, and a practical proof-of-work story.</p>
               </article>
             </div>
           </div>
@@ -147,32 +178,32 @@
             <article class="timeline-item">
               <span class="timeline-kicker">01 / Problem</span>
               <h4>Job searching fragments across tabs, notes, resumes, reminders, and uncertain next actions.</h4>
-              <p>JobTracker frames the problem as a personal CRM: one workspace for discovering leads, judging fit, converting opportunities, tracking applications, preparing interviews, managing materials, and deciding what deserves attention.</p>
+              <p>JobTracker frames the problem as a personal CRM: one workspace for discovering leads, judging fit, reviewing opportunities, tracking applications, preparing interviews, managing materials, and deciding what deserves attention.</p>
             </article>
             <article class="timeline-item">
-              <span class="timeline-kicker">02 / Product Direction</span>
-              <h4>Design-source compliance became the operating rule.</h4>
-              <p>The alpha is governed by the current JobTracker design source and design system. New UI is not added casually; visible controls must map to source-backed behavior, documented alpha mocks, or explicit product decisions.</p>
+              <span class="timeline-kicker">02 / Smart Leads</span>
+              <h4>Recommendations stay review-safe and action-oriented.</h4>
+              <p>Smart Leads summarizes what to do next without taking action for the user. It can recommend asking first or flagging high risk, but it does not submit applications, contact employers, or create applications automatically.</p>
             </article>
             <article class="timeline-item">
               <span class="timeline-kicker">03 / Architecture</span>
               <h4>Supabase owns auth, data access, storage, and server-side integration boundaries.</h4>
-              <p>The implementation uses RLS-backed tables, RPCs where workflows need stricter server control, storage for user materials, Edge Functions for sensitive provider and AI calls, and a client that does not hide configured backend errors.</p>
+              <p>The implementation uses RLS-backed tables, scoped RPCs, storage for user materials, Edge Functions for sensitive provider and AI calls, and a client that surfaces real backend errors instead of hiding them behind fake success states.</p>
             </article>
             <article class="timeline-item">
               <span class="timeline-kicker">04 / Delivery</span>
-              <h4>Work is sliced vertically by visible user workflow.</h4>
-              <p>Discovery, leads, pipeline, tasks, companies, materials, settings, onboarding, and auth are treated as complete behavior surfaces: empty states, validation, loading, success, failure, persistence, and responsive behavior are part of the slice.</p>
+              <h4>Agentic delivery is governed by tracker tickets and review evidence.</h4>
+              <p>The workflow uses approved tracker tickets, Product Steward review, specialized reviewer roles, PR evidence packs, and Merge Captain closeout so each slice can be reviewed from GitHub without relying on chat memory.</p>
             </article>
             <article class="timeline-item">
               <span class="timeline-kicker">05 / Verification</span>
               <h4>Regression checks protect source behavior and practical usability.</h4>
-              <p>Playwright coverage targets actual interactions, no-horizontal-overflow checks, auth and onboarding flows, source setup, workspace CRUD, and UI states that commonly regress when product scope changes quickly.</p>
+              <p>Playwright and repository checks cover source boundaries, auth flows, Smart Leads read-only UI behavior, hosted alpha smoke, and no-horizontal-overflow expectations for changed surfaces.</p>
             </article>
             <article class="timeline-item">
-              <span class="timeline-kicker">06 / Roadmap</span>
-              <h4>The next milestone is replacing approved alpha mocks with real backend behavior.</h4>
-              <p>Remaining work focuses on provider hardening, richer source tracking, production email templates, resume parsing decisions, and public-readiness review before any source repository exposure.</p>
+              <span class="timeline-kicker">06 / Proof of work</span>
+              <h4>The case study is honest about alpha scope.</h4>
+              <p>The work is presented as alpha product execution, architecture discipline, and AI workflow practice. It avoids fake metrics, production-scale claims, and claims that the product autonomously applies or contacts employers.</p>
             </article>
           </div>
         </div>
@@ -228,15 +259,15 @@
           <div class="habits-grid">
             <div class="habit-card">
               <h4 class="evidence-title">Architecture & Tradeoffs</h4>
-              <p class="evidence-desc">JobTracker relies on Supabase and Expo, leaning on Edge Functions for secure API handling and strict RLS for data isolation.</p>
+              <p class="evidence-desc">JobTracker relies on Supabase and Expo, leaning on Edge Functions for secure API handling, strict RLS for data isolation, and Cloudflare Pages for the alpha deployment.</p>
             </div>
             <div class="habit-card">
-              <h4 class="evidence-title">Source-backed Guardrails</h4>
-              <p class="evidence-desc">UI implementation is strictly governed by design sources. Rules enforce consistency so components do not drift silently over time.</p>
+              <h4 class="evidence-title">Smart Leads Guardrails</h4>
+              <p class="evidence-desc">Smart Leads provides recommendation support only. It does not auto-apply, auto-message recruiters or employers, or auto-convert leads into applications.</p>
             </div>
             <div class="habit-card">
-              <h4 class="evidence-title">Alpha Readiness</h4>
-              <p class="evidence-desc">The deployed alpha passes rigorous regression gates and Playwright checks to verify critical flows before public exposure.</p>
+              <h4 class="evidence-title">Agentic Delivery Practice</h4>
+              <p class="evidence-desc">The delivery process uses approved tickets, evidence packs, reviewer roles, and post-merge continuation from durable tracker docs.</p>
             </div>
           </div>
         </div>

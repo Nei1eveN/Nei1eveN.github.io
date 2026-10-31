@@ -681,3 +681,70 @@ h1, h2, h3, h4, p {
     text-align: center;
   }
 }
+
+
+/* Client-value portfolio refresh — Oct 2026. Existing nav and base styles retained. */
+.skip-link{position:absolute;top:-80px;left:16px;z-index:100;padding:12px 18px;background:var(--ink);color:#fff}
+.skip-link:focus{top:8px}
+.eyebrow{font-size:.76rem;letter-spacing:.12em;text-transform:uppercase;font-weight:700;color:#515151;margin-bottom:22px}
+.impact-hero{background:#f6f7f6}
+.impact-hero .section-inner{padding-bottom:104px}
+.impact-hero-layout{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(250px,.74fr);gap:clamp(28px,5vw,90px);align-items:end}
+.impact-hero .display-title{font-size:clamp(3.05rem,6vw,6rem);line-height:1.045;letter-spacing:-.055em;margin-bottom:30px}
+.muted-line{color:#5f6d68}
+.impact-hero .hero-copy{max-width:750px;margin-bottom:32px}
+.impact-hero .hero-actions{flex-wrap:wrap}
+.hero-subline{font-size:.84rem;color:var(--muted);margin-top:21px}
+.impact-credentials{border-left:1px solid #cdd5d0;padding-left:30px}
+.credential{border-top:1px solid #cdd5d0;padding:19px 0}
+.credential strong{font-size:clamp(1.4rem,2.4vw,2.1rem);font-weight:600;letter-spacing:-.03em;display:block}
+.credential span{display:block;color:#555e59;font-size:.9rem;line-height:1.45}
+.impact-credentials .text-link{margin-top:18px}
+.compact-header{margin-bottom:42px}
+.section-support{font-size:1.04rem;color:var(--ink-light);max-width:790px;margin-top:18px}
+.value-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));border-left:1px solid var(--line);border-top:1px solid var(--line)}
+.value-card{padding:34px 35px 34px 30px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);display:flex;flex-direction:column;min-width:0}
+.value-index,.case-type{display:block;font-size:.74rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:#64706c;margin-bottom:16px}
+.value-card h3{font-size:clamp(1.3rem,2.1vw,1.85rem);line-height:1.22;font-weight:520;letter-spacing:-.03em;margin-bottom:17px;max-width:430px}
+.value-card>p:not(.value-result){font-size:.97rem;color:var(--ink-light)}
+.value-result{border-top:1px solid var(--line);margin-top:auto;padding-top:20px;font-size:.91rem;color:var(--ink-light)}
+.value-result strong{display:block;color:var(--ink);margin-bottom:5px}
+.inline-cta{display:flex;align-items:center;justify-content:space-between;gap:24px;padding-top:27px;font-size:.92rem;color:var(--ink-light)}
+.text-link{display:inline-flex;gap:8px;align-items:center;font-weight:650;text-decoration:underline;text-underline-offset:5px;font-size:.92rem}
+.text-link:hover{opacity:.65}
+.section-tinted{background:#f6f7f6}
+.experience-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+.experience-card{border:1px solid #dce2df;background:#fff;padding:30px;min-width:0;display:flex;flex-direction:column}
+.experience-card h3,.work-card h3,.engagement-grid h3{font-weight:550;letter-spacing:-.025em;font-size:1.35rem;line-height:1.26;margin-bottom:17px}
+.experience-card>p:not(.case-type){font-size:.96rem;color:var(--ink-light)}
+.experience-card .experience-why{border-top:1px solid var(--line);padding-top:19px;margin-top:23px}
+.experience-why strong,.work-insight strong{color:var(--ink)}
+.experience-card .evidence-footnote{margin-top:auto;padding-top:18px;font-size:.77rem;color:var(--muted)}
+.selected-work-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+.work-card{border:1px solid var(--line);display:flex;flex-direction:column;min-width:0}
+.work-featured{grid-column:1/-1;display:grid;grid-template-columns:1fr 1.1fr}
+.work-visual{background:#f0f1f1;overflow:hidden;min-height:320px;display:flex;align-items:center;justify-content:center}
+.work-visual img{width:100%;height:100%;max-height:450px;object-fit:contain}
+.work-body{padding:clamp(24px,3.2vw,43px);display:flex;flex-direction:column;align-items:flex-start;height:100%}
+.work-body>p:not(.case-type){font-size:.96rem;color:var(--ink-light);margin-bottom:22px}
+.work-body .work-insight{padding-top:17px;border-top:1px solid var(--line);margin-top:auto}
+.work-body .text-link{margin-top:5px}
+.proof-note{font-size:.83rem;margin-top:22px;color:var(--muted)}
+.engagement-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+.engagement-grid article{border-top:2px solid var(--ink);padding:24px 18px 12px 0}
+.step-number{display:inline-block;color:#64706c;margin-bottom:28px;font-size:1rem}
+.engagement-grid p,.engagement-detail p{font-size:.95rem;color:var(--ink-light)}
+.engagement-detail{border:1px solid var(--line);padding:22px 25px;margin-top:35px}
+.engagement-detail a{text-decoration:underline;text-underline-offset:3px}
+.about-layout,.contact-layout{display:grid;grid-template-columns:1fr 1.15fr;gap:clamp(32px,7vw,110px)}
+.about-copy{font-size:1.08rem;color:var(--ink-light);margin-bottom:20px}
+.about-links{display:flex;gap:24px;flex-wrap:wrap;margin-top:26px}
+.contact-band{background:#eef2ef}
+.contact-layout{align-items:center}
+.contact-layout p:not(.section-title){font-size:1.02rem;color:#485650;margin-top:20px}
+.contact-actions{display:flex;flex-direction:column;align-items:flex-start;gap:22px}
+.nav-service{color:var(--ink)!important;font-weight:700!important}
+.section[id]{scroll-margin-top:64px}
+@media(max-width:1024px){.impact-hero-layout{grid-template-columns:1fr}.impact-credentials{display:grid;grid-template-columns:repeat(3,1fr);border-left:0;border-top:1px solid #cdd5d0;padding-left:0;gap:20px}.impact-credentials .text-link{grid-column:1/-1}.experience-grid{grid-template-columns:1fr 1fr}.experience-card:last-child{grid-column:1/-1}}
+@media(max-width:768px){.impact-hero .section-inner{padding-bottom:64px}.impact-hero .display-title{font-size:clamp(2.8rem,10vw,4.2rem)}.impact-credentials{grid-template-columns:1fr;gap:0}.impact-credentials .text-link{grid-column:1}.value-grid,.experience-grid,.selected-work-grid,.engagement-grid,.about-layout,.contact-layout{grid-template-columns:1fr}.experience-card:last-child,.work-featured{grid-column:1}.work-featured{display:flex;flex-direction:column}.work-visual{min-height:170px;max-height:310px}.inline-cta{align-items:flex-start;flex-direction:column}.hero-actions{flex-direction:column}.value-card{padding:26px}.contact-actions .button{width:100%}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}

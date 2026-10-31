@@ -634,10 +634,6 @@ h1, h2, h3, h4, p {
     font-size: clamp(2.9rem, 14vw, 3.7rem);
   }
 
-  .display-title br {
-    display: none;
-  }
-
   .primary-nav {
     position: fixed;
     top: 64px;
@@ -691,7 +687,6 @@ h1, h2, h3, h4, p {
 .impact-hero .section-inner{padding-bottom:104px}
 .impact-hero-layout{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(250px,.74fr);gap:clamp(28px,5vw,90px);align-items:end}
 .impact-hero .display-title{font-size:clamp(3.05rem,6vw,6rem);line-height:1.045;letter-spacing:-.055em;margin-bottom:30px}
-.muted-line{color:#5f6d68}
 .impact-hero .hero-copy{max-width:750px;margin-bottom:32px}
 .impact-hero .hero-actions{flex-wrap:wrap}
 .hero-subline{font-size:.84rem;color:var(--muted);margin-top:21px}

@@ -1,0 +1,441 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="A hands-on Flutter release incident. Inspect a failed request, choose a rollout, and verify compatibility for both app versions.">
+<title>Broken Flutter release · Mobile Delivery Lab</title>
+<style>
+
+:root {
+  color-scheme: light;
+  --paper: #fdfdfd;
+  --ink: #111;
+  --muted: #555;
+  --line: #e5e5e5;
+  --fault: #a32222;
+  --fault-bg: #fbe8e8;
+  --mono: ui-monospace, "SFMono-Regular", Consolas, monospace;
+  --sans: Inter, ui-sans-serif, system-ui, -apple-system, sans-serif;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--paper); color: var(--ink); font: 16px/1.55 var(--sans); -webkit-font-smoothing: antialiased; }
+button, input { font: inherit; }
+button { cursor: pointer; }
+a { color: inherit; text-underline-offset: .2em; }
+button:focus-visible, a:focus-visible, input:focus-visible { outline: 2px solid var(--ink); outline-offset: 4px; }
+[hidden] { display: none !important; }
+h1, h2, h3, p { margin: 0; }
+.wrap { width: min(1328px, calc(100% - 112px)); margin-inline: auto; }
+.site-header { border-bottom: 1px solid var(--line); }
+.bar { min-height: 68px; display: flex; align-items: center; justify-content: space-between; gap: 20px; }
+.brand { display: flex; align-items: center; gap: 16px; font-size: 1.15rem; }
+.brand strong { font-size: 1.1rem; }
+.brand-divider { color: #aaa; }
+.brand-name { color: var(--muted); }
+.back-link { font-weight: 600; text-decoration: none; font-size: 1rem; }
+.back-link:hover { text-decoration: underline; }
+.hero { display: grid; grid-template-columns: minmax(0, 2.15fr) minmax(250px, 1fr); gap: 52px; padding-block: 52px 42px; }
+.eyebrow, .panel-label, .trace-label, .summary-title, .result-count, .version {
+  font: 650 .78rem/1.5 var(--sans); letter-spacing: .13em; text-transform: uppercase;
+}
+.eyebrow { color: #444; }
+h1 { font-size: clamp(3rem, 6.2vw, 5.65rem); line-height: 1.08; letter-spacing: -.06em; font-weight: 600; margin: 22px 0 25px; }
+.hero-copy { color: #444; font-size: 1.25rem; max-width: 65ch; }
+.summary { border-left: 1px solid var(--line); padding-left: 38px; }
+.summary-title { color: #444; margin-bottom: 18px; }
+.summary-item + .summary-item { border-top: 1px solid #d5d5d5; margin-top: 19px; padding-top: 19px; }
+.summary-item strong { display: block; font-size: 1.5rem; font-weight: 560; letter-spacing: -.04em; }
+.summary-item p { color: var(--muted); font-size: .94rem; margin-top: 3px; }
+.lab { border-top: 1px solid #d5d5d5; }
+.steps { display: flex; gap: 56px; list-style: none; margin: 0; padding: 0; border-bottom: 1px solid #d5d5d5; }
+.step { display: flex; align-items: center; gap: 20px; min-height: 84px; padding: 0; border: 0; border-bottom: 3px solid transparent; margin-bottom: -1px; background: transparent; color: #444; font-size: 1.15rem; text-align: left; }
+.step[aria-current="step"] { border-bottom-color: var(--ink); color: var(--ink); font-weight: 650; }
+.step:disabled { cursor: default; }
+.step:hover:enabled { color: #000; }
+.step-num { display: grid; place-items: center; width: 35px; height: 35px; flex-shrink: 0; border: 1px solid #bbb; border-radius: 50%; font-weight: 400; }
+.step[aria-current="step"] .step-num { background: var(--ink); color: #fff; border-color: var(--ink); }
+.panel { padding: 35px 0 25px; }
+.panel-label { color: #444; margin-bottom: 10px; }
+.panel h3 { font-size: clamp(1.75rem, 3.55vw, 3.2rem); line-height: 1.15; letter-spacing: -.04em; font-weight: 550; margin-bottom: 22px; }
+.panel h3:focus { outline: none; }
+.panel > p, .intro > p { color: #444; max-width: 65ch; }
+.inspect-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: start; }
+.intro > p:first-of-type { font-size: .94rem; }
+.cohorts { width: min(100%, 450px); display: flex; gap: 14px; margin: 24px 0 20px; }
+.cohort { flex: 1; padding: 12px 14px; color: var(--ink); background: transparent; border: 1px solid #bbb; border-radius: 2px; }
+.cohort[aria-pressed="true"] { background: var(--ink); color: #fff; border-color: var(--ink); }
+.cohort:hover { border-color: #000; }
+.cohort strong { font-size: .93rem; font-weight: 600; }
+.cohort small { display: none; }
+.trace-note { font-size: 1.12rem; line-height: 1.6; }
+.console { min-width: 0; border-left: 1px solid #d5d5d5; padding-left: 38px; margin-top: 34px; }
+.console-title { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; margin-bottom: 14px; }
+.trace-label { color: #444; }
+.console-body { padding: 16px 20px; background: #f4f4f4; border-radius: 2px; }
+.request-line { font: 500 1rem/1.5 var(--mono); overflow-wrap: anywhere; }
+.method { margin-right: 8px; }
+.headers { font: .89rem/1.5 var(--mono); margin: 4px 0 16px; overflow-wrap: anywhere; }
+pre { margin: 0; padding-top: 0; font: .95rem/1.65 var(--mono); white-space: pre-wrap; overflow-wrap: anywhere; }
+.trace-response { margin: 0 -20px 14px; padding: 5px 20px; }
+.trace-response:has(.fail) { background: var(--fault-bg); }
+.trace-response:has(.pass) { background: #edf5ed; }
+.trace-response .badge { padding-inline: 0; font-size: 1rem; }
+.badge { display: inline-flex; align-items: center; width: fit-content; padding: 4px 8px; border-radius: 2px; font: 600 .8rem/1.4 var(--sans); white-space: nowrap; }
+.fail { color: var(--fault); background: var(--fault-bg); }
+.pass { color: #225036; background: #edf5ed; }
+.actions { display: flex; align-items: center; flex-wrap: wrap; gap: 22px; margin-top: 28px; }
+.primary, .secondary { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 48px; padding: 10px 24px; border: 1px solid var(--ink); border-radius: 2px; font-weight: 600; font-size: .95rem; }
+.primary { color: #fff; background: var(--ink); }
+.primary:hover { background: #333; }
+.primary:disabled { opacity: .5; cursor: default; }
+.secondary { color: var(--ink); background: transparent; border-color: #bbb; }
+.secondary:hover { background: #f0f0f0; }
+.reset { border: 0; background: transparent; padding: 9px 0; font-size: .95rem; font-weight: 600; text-decoration: underline; text-underline-offset: 4px; }
+.reset:disabled { opacity: .45; cursor: default; }
+fieldset { padding: 0; border: 0; margin: 25px 0 0; }
+legend { margin-bottom: 15px; font-weight: 600; }
+.plans { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+.plan { display: flex; align-items: flex-start; gap: 10px; padding: 20px; border: 1px solid #ccc; border-radius: 2px; cursor: pointer; }
+.plan:has(input:checked), .plan:hover { background: #f4f4f4; border-color: #111; }
+.plan input { accent-color: #111; margin: 5px 0 0; flex-shrink: 0; }
+.plan strong, .plan small { display: block; }
+.plan strong { font-size: 1.03rem; }
+.plan small { color: var(--muted); margin-top: 8px; font-size: .9rem; line-height: 1.6; }
+.result-summary { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; padding: 18px 0; margin-top: 14px; }
+.result-count { font-size: .75rem; }
+.checks { margin: 0; padding: 0; list-style: none; border-top: 1px solid #ccc; }
+.check { display: grid; grid-template-columns: 150px minmax(0, 1fr) auto; gap: 20px; border-bottom: 1px solid var(--line); padding: 15px 0; }
+.check .version { color: var(--muted); font-size: .73rem; padding-top: 4px; }
+.check strong { font-weight: 600; }
+.check p { color: var(--muted); font-size: .9rem; margin-top: 3px; }
+.lesson { margin-top: 20px; }
+.result-link { font-size: .95rem; font-weight: 600; }
+.context { margin: 15px 0 35px; padding-top: 16px; border-top: 1px solid #d5d5d5; font-size: .84rem; color: #666; }
+.context p + p { margin-top: 8px; }
+.skip-link { position: absolute; top: -80px; left: 16px; padding: 12px; background: #111; color: #fff; z-index: 10; }
+.skip-link:focus { top: 8px; }
+@media (max-width: 1050px) {
+  .wrap { width: calc(100% - 64px); }
+  .hero { gap: 32px; grid-template-columns: minmax(0, 1.8fr) minmax(230px, 1fr); }
+  .summary { padding-left: 24px; }
+  .steps { gap: 34px; }
+  .step { gap: 12px; font-size: 1rem; }
+  .inspect-grid { gap: 25px; }
+  .console { padding-left: 24px; }
+}
+@media (max-width: 750px) {
+  .wrap { width: calc(100% - 40px); }
+  .bar { min-height: 64px; }
+  .brand { gap: 8px; font-size: .9rem; }
+  .brand strong { font-size: .95rem; }
+  .back-link { font-size: .83rem; }
+  .hero { grid-template-columns: 1fr; gap: 28px; padding-block: 35px 30px; }
+  h1 { font-size: clamp(2.7rem, 8vw, 4rem); margin: 15px 0 20px; }
+  .hero-copy { font-size: 1rem; }
+  .eyebrow { font-size: .68rem; }
+  .summary { padding-left: 0; border-left: 0; }
+  .summary-title { margin-bottom: 9px; }
+  .summary-items { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+  .summary-item + .summary-item { margin: 0; padding: 0 0 0 16px; border-top: 0; border-left: 1px solid var(--line); }
+  .summary-item strong { font-size: 1.15rem; }
+  .summary-item p { font-size: .82rem; }
+  .steps { gap: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .step { width: 100%; min-height: 86px; gap: 7px; flex-wrap: wrap; align-content: center; font-size: .82rem; padding: 10px 6px 10px 0; }
+  .step-num { width: 25px; height: 25px; font-size: .85rem; }
+  .panel { padding-top: 26px; }
+  .panel h3 { font-size: 2rem; margin-bottom: 16px; }
+  .inspect-grid, .plans { grid-template-columns: 1fr; }
+  .console { margin: 0; padding: 0; border: 0; }
+  .trace-note { font-size: 1rem; }
+  .cohorts { gap: 9px; margin-block: 18px; }
+  .cohort { padding-inline: 8px; }
+  .cohort strong { font-size: .85rem; }
+  .check { grid-template-columns: minmax(0, 1fr) auto; gap: 6px 12px; }
+  .check .version { grid-column: 1 / -1; }
+  .check strong { font-size: .9rem; }
+}
+@media (max-width: 380px) {
+  .brand-name { font-size: .78rem; }
+  .back-link { max-width: 65px; line-height: 1.25; }
+}
+</style>
+</head>
+
+<body>
+<a class="skip-link" href="#main">Skip to exercise</a>
+<header class="site-header">
+  <div class="wrap bar">
+    <div class="brand"><strong>NPP</strong><span class="brand-divider" aria-hidden="true">/</span><span class="brand-name">Mobile Delivery Lab</span></div>
+    <a class="back-link" href="../index.html#work">Back to portfolio</a>
+  </div>
+</header>
+<main class="wrap" id="main">
+  <div class="hero">
+    <div>
+      <div class="eyebrow">Mobile Delivery Lab · Flutter release exercise</div>
+      <h1>Broken Flutter release</h1>
+      <p class="hero-copy">A new build reaches the test group. Its Orders screen comes back empty. Follow the failed request, choose a rollout, and check that both app versions work.</p>
+    </div>
+    <aside class="summary" aria-label="Incident summary">
+      <div class="summary-title">Incident summary</div>
+      <div class="summary-items">
+        <div class="summary-item"><strong>Flutter app 2.8</strong><p>Test build · Orders screen failing</p></div>
+        <div class="summary-item"><strong>Orders API 1.12</strong><p>Running backend · Supports /v1/orders</p></div>
+      </div>
+    </aside>
+  </div>
+  <section class="lab" aria-label="Release exercise">
+    <nav aria-label="Exercise steps">
+      <ol class="steps">
+        <li><button class="step" type="button" data-step="0" aria-controls="inspect" aria-current="step"><span class="step-num" aria-hidden="true">1</span> Inspect request</button></li>
+        <li><button class="step" type="button" data-step="1" aria-controls="choose" disabled><span class="step-num" aria-hidden="true">2</span> Choose rollout</button></li>
+        <li><button class="step" type="button" data-step="2" aria-controls="verify" disabled><span class="step-num" aria-hidden="true">3</span> Verify release</button></li>
+      </ol>
+    </nav>
+    <section class="panel" id="inspect" aria-labelledby="inspect-title">
+      <div class="inspect-grid">
+        <div class="intro">
+          <div class="panel-label">Diagnosis</div>
+          <h3 id="inspect-title" tabindex="-1">What changed in 2.8?</h3>
+                    <div class="cohorts" role="group" aria-label="App versions">
+            <button class="cohort" type="button" data-client="current" aria-pressed="true"><strong>Flutter app 2.8</strong><small>Test build</small></button>
+            <button class="cohort" type="button" data-client="legacy" aria-pressed="false"><strong>Flutter app 2.7</strong><small>Existing users</small></button>
+          </div>
+          <p class="trace-note" id="trace-note" role="status">The test build calls /v2/orders, which returns 404. App 2.7 uses /v1/orders, which the running API still supports.</p>
+        </div>
+
+        <div class="console" aria-label="Simulated request trace">
+          <div class="console-title"><span class="trace-label">Request trace</span></div>
+          <div class="console-body">
+            <div class="request-line"><span class="method">GET</span><span id="trace-path">/v2/orders</span></div>
+            <p class="headers" id="trace-header">X-App-Version: 2.8</p><div class="trace-response"><span class="badge fail" id="trace-status">404 Not Found</span></div>
+            <pre id="trace-body">{
+  "error": "route_not_found",
+  "path": "/v2/orders"
+}</pre>
+          </div>
+        </div>
+      </div>
+      <div class="actions"><button class="primary" id="next" type="button">Choose a rollout <span aria-hidden="true">→</span></button><button class="reset" id="reset" type="button" disabled>Restart</button></div>
+    </section>
+
+    <section class="panel" id="choose" aria-labelledby="choose-title" hidden>
+      <div class="panel-label">Rollout</div>
+      <h3 id="choose-title" tabindex="-1">How should the release proceed?</h3>
+      <p>Pause the rollout at the test group while you decide. Existing users will stay on Flutter app 2.7 during the gradual rollout of 2.8.</p>
+      <form id="rollout">
+        <fieldset>
+          <legend>Choose a release plan</legend>
+          <div class="plans">
+            <label class="plan"><input type="radio" name="plan" value="app-first" required><span><strong>Ship Flutter app 2.8 first</strong><small>Release 2.8 now. Deploy an API with both routes afterward.</small></span></label>
+            <label class="plan"><input type="radio" name="plan" value="replace"><span><strong>Replace the API route first</strong><small>Deploy an API with only <code>/v2/orders</code>. Then release 2.8.</small></span></label>
+            <label class="plan"><input type="radio" name="plan" value="compatible"><span><strong>Add the new route first</strong><small>Deploy an API that serves both routes. Then release 2.8.</small></span></label>
+          </div>
+        </fieldset>
+        <div class="actions">
+          <button class="primary" id="run" type="submit" disabled>Run compatibility checks <span aria-hidden="true">→</span></button>
+          <button class="secondary" id="back-inspect" type="button">Back to request</button>
+        </div>
+      </form>
+    </section>
+
+    <section class="panel" id="verify" aria-labelledby="verify-title" hidden>
+      <div class="panel-label">Verification</div>
+      <h3 id="verify-title" tabindex="-1"></h3>
+      <p id="result-intro"></p>
+      <div class="result-summary">
+        <strong id="result-plan"></strong>
+        <span class="result-count" id="result-count"></span>
+      </div>
+      <ul class="checks" id="checks" aria-label="Compatibility check results"></ul>
+      <p class="lesson" id="lesson"></p>
+      <div class="actions"><button class="secondary" id="try-again" type="button">Try another rollout</button><a class="result-link" href="../index.html#release-result">See the related release case</a></div>
+    </section>
+
+    <noscript><p class="panel">Enable JavaScript to compare requests and run the rollout simulation.</p></noscript>
+    
+  </section>
+  <footer class="context">
+    <p>Fictional scenario. All checks run in your browser.</p>
+    <p>Built by Neil Patrick Potot, inspired by coordinating Flutter and backend releases. <a href="../index.html#release-result">Read the related work example</a>.</p>
+  </footer>
+</main>
+<script>
+const clients = {
+  legacy: { version: '2.7', route: '/v1/orders', orderField: 'orders' },
+  current: { version: '2.8', route: '/v2/orders', orderField: 'items' },
+};
+
+const servers = {
+  original: { '/v1/orders': { orders: [{ id: 'ORD-104' }] } },
+  replacement: { '/v2/orders': { items: [{ id: 'ORD-104' }] } },
+  compatible: {
+    '/v1/orders': { orders: [{ id: 'ORD-104' }] },
+    '/v2/orders': { items: [{ id: 'ORD-104' }] },
+  },
+};
+
+const plans = {
+  'app-first': {
+    title: 'Ship Flutter app 2.8 first',
+    firstServer: 'original',
+    firstClients: ['legacy', 'current'],
+    finalServer: 'compatible',
+  },
+  replace: {
+    title: 'Replace the API route first',
+    firstServer: 'replacement',
+    firstClients: ['legacy'],
+    finalServer: 'replacement',
+  },
+  compatible: {
+    title: 'Add the new route first',
+    firstServer: 'compatible',
+    firstClients: ['legacy'],
+    finalServer: 'compatible',
+  },
+};
+
+function requestOrders(clientKey, serverKey) {
+  const client = clients[clientKey];
+  const body = servers[serverKey][client.route];
+  if (!body) {
+    return { status: 404, body: { error: 'route_not_found', path: client.route } };
+  }
+  return { status: 200, body };
+}
+
+function verifyPlan(plan) {
+  const phases = [
+    { label: 'First change', server: plan.firstServer, activeClients: plan.firstClients },
+    { label: 'Mixed rollout', server: plan.finalServer, activeClients: ['legacy', 'current'] },
+  ];
+
+  return phases.flatMap(({ label, server, activeClients }) => activeClients.map(clientKey => {
+    const client = clients[clientKey];
+    const response = requestOrders(clientKey, server);
+    const items = response.body[client.orderField];
+    return {
+      phase: label,
+      client,
+      status: response.status,
+      passed: response.status === 200 && Array.isArray(items) && items.some(item => item.id === 'ORD-104'),
+    };
+  }));
+}
+
+const panels = [...document.querySelectorAll('.panel[aria-labelledby]')];
+const steps = [...document.querySelectorAll('.step')];
+const cohorts = [...document.querySelectorAll('.cohort')];
+const form = document.querySelector('#rollout');
+const run = document.querySelector('#run');
+const reset = document.querySelector('#reset');
+const checks = document.querySelector('#checks');
+let chooseUnlocked = false;
+let resultAvailable = false;
+
+function showStep(index) {
+  panels.forEach((panel, i) => { panel.hidden = i !== index; });
+  steps.forEach((step, i) => {
+    step.disabled = (i === 1 && !chooseUnlocked) || (i === 2 && !resultAvailable);
+    if (i === index) step.setAttribute('aria-current', 'step');
+    else step.removeAttribute('aria-current');
+  });
+  panels[index].querySelector('h3').focus();
+}
+
+function renderTrace(key) {
+  const client = clients[key];
+  const response = requestOrders(key, 'original');
+  const failed = response.status === 404;
+  const badge = document.querySelector('#trace-status');
+  badge.textContent = failed ? '404 Not Found' : '200 OK';
+  badge.classList.toggle('fail', failed);
+  badge.classList.toggle('pass', !failed);
+  document.querySelector('#trace-path').textContent = client.route;
+  document.querySelector('#trace-header').textContent = 'X-App-Version: ' + client.version;
+  document.querySelector('#trace-body').textContent = JSON.stringify(response.body, null, 2);
+  document.querySelector('#trace-note').textContent = failed
+    ? 'The test build calls /v2/orders, which returns 404. App 2.7 uses /v1/orders, which the running API still supports.'
+    : '200. Existing users can load orders through the API’s current route.';
+  cohorts.forEach(button => { button.setAttribute('aria-pressed', String(button.dataset.client === key)); });
+}
+
+function renderResult(plan, results) {
+  const passedCount = results.filter(check => check.passed).length;
+  const safe = passedCount === results.length;
+  document.querySelector('#verify-title').textContent = safe ? 'Safe to continue in this simulation' : 'Rollout blocked';
+  document.querySelector('#result-intro').textContent = safe
+    ? 'Existing users keep access through the backend change. Both app versions can load orders during the gradual rollout.'
+    : 'At least one app version fails to load orders during the rollout. Check which version breaks and when.';
+  document.querySelector('#result-plan').textContent = plan.title;
+  document.querySelector('#result-count').textContent = passedCount + ' / ' + results.length + ' checks passed';
+  checks.replaceChildren(...results.map(({ phase, client, status, passed }) => {
+    const row = document.createElement('li');
+    row.className = 'check';
+
+    const label = document.createElement('span');
+    label.className = 'version';
+    label.textContent = phase;
+
+    const details = document.createElement('div');
+    const title = document.createElement('strong');
+    title.textContent = 'Flutter app ' + client.version + ' · GET ' + client.route;
+    const outcome = document.createElement('p');
+    outcome.textContent = passed ? 'HTTP 200 · Order ORD-104 loaded' : 'HTTP ' + status + ' · ' + (status === 404 ? 'Endpoint missing' : 'Expected order missing');
+    details.append(title, outcome);
+
+    const badge = document.createElement('span');
+    badge.className = 'badge ' + (passed ? 'pass' : 'fail');
+    badge.textContent = passed ? 'Pass' : 'Fail';
+
+    row.append(label, details, badge);
+    return row;
+  }));
+  document.querySelector('#lesson').textContent = safe
+    ? 'Keep the older route available while Flutter app 2.7 is supported.'
+    : 'Try a plan that makes the new route available before 2.8 ships and keeps the older route available for 2.7.';
+}
+
+steps.forEach(button => {
+  button.addEventListener('click', () => showStep(Number(button.dataset.step)));
+});
+cohorts.forEach(button => {
+  button.addEventListener('click', () => {
+    renderTrace(button.dataset.client);
+    reset.disabled = false;
+  });
+});
+document.querySelector('#next').addEventListener('click', () => {
+  chooseUnlocked = true;
+  reset.disabled = false;
+  showStep(1);
+});
+document.querySelector('#back-inspect').addEventListener('click', () => showStep(0));
+document.querySelector('#try-again').addEventListener('click', () => showStep(1));
+form.addEventListener('change', () => {
+  run.disabled = false;
+  resultAvailable = false;
+  steps[2].disabled = true;
+});
+form.addEventListener('submit', event => {
+  event.preventDefault();
+  const plan = plans[new FormData(form).get('plan')];
+  if (!plan) return;
+  renderResult(plan, verifyPlan(plan));
+  resultAvailable = true;
+  showStep(2);
+});
+reset.addEventListener('click', () => {
+  chooseUnlocked = false;
+  resultAvailable = false;
+  form.reset();
+  run.disabled = true;
+  renderTrace('current');
+  showStep(0);
+  reset.disabled = true;
+});
+</script>
+</body>
+</html>

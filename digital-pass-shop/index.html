@@ -1,0 +1,616 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="A fictional workshop shop with gift passes and a simulated checkout.">
+<title>Fieldwork Studio | Digital pass shop</title>
+<style>
+:root {
+  color-scheme: light;
+  --ink: #21241e;
+  --muted: #575a50;
+  --paper: #f8f7f0;
+  --white: #fffef9;
+  --line: #dcded2;
+  --dark: #26332a;
+  --accent: #e9f19e;
+  --serif: Georgia, 'Times New Roman', serif;
+  --sans: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--paper); color: var(--ink); font: 16px/1.55 var(--sans); }
+a { color: inherit; text-underline-offset: .25em; }
+button, input { font: inherit; }
+button { cursor: pointer; }
+button:disabled { cursor: default; opacity: .5; }
+:focus-visible { outline: 3px solid #55724a; outline-offset: 3px; }
+img, svg { max-width: 100%; }
+h1, h2, h3, p { margin: 0; }
+[hidden] { display: none !important; }
+.wrap { width: min(1280px, calc(100% - 80px)); margin-inline: auto; }
+.skip { position: absolute; z-index: 5; top: -90px; left: 12px; background: white; padding: 10px; }
+.skip:focus { top: 12px; }
+.masthead { border-bottom: 1px solid var(--line); background: var(--white); }
+.nav { min-height: 70px; display: flex; align-items: center; justify-content: space-between; gap: 20px; }
+.brand { display: inline-flex; align-items: center; gap: 9px; font-weight: 750; letter-spacing: -.035em; text-decoration: none; font-size: 1.3rem; }
+.brand svg { flex: 0 0 24px; }
+.nav-links { display: flex; flex-wrap: wrap; align-items: center; gap: 22px; font-size: .9rem; font-weight: 620; }
+.nav-links a { text-decoration: none; }
+.nav-links a:hover { text-decoration: underline; }
+.nav-count { display: inline-block; min-width: 25px; padding: 2px 5px; border-radius: 30px; background: var(--accent); text-align: center; margin-left: 3px; }
+.hero { border-bottom: 1px solid var(--line); }
+.hero-inner { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(220px, .55fr); gap: 48px; align-items: end; padding: 47px 0 40px; }
+.kicker { text-transform: uppercase; font-size: .71rem; font-weight: 720; letter-spacing: .15em; }
+.hero h1 { font: 400 clamp(3rem, 7vw, 6.25rem)/.98 var(--serif); letter-spacing: -.075em; margin-top: 12px; }
+.hero p { color: var(--muted); max-width: 39ch; font-size: .98rem; }
+.hero .demo-label { display: inline-block; border: 1px solid #cdd4bf; border-radius: 24px; padding: 4px 11px; margin-bottom: 11px; color: #354832; background: #eef0e3; font-size: .76rem; font-weight: 650; }
+.hero .guide-link { display: inline-block; margin-top: 9px; font-size: .85rem; font-weight: 650; }
+.shop-layout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(310px, .41fr); align-items: start; gap: 28px; padding-block: 33px 50px; }
+.section-head { display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap; gap: 6px 14px; margin-bottom: 17px; }
+.section-head h2, .cart-head h2, .orders h2, .guide h2 { font: 400 1.85rem/1.15 var(--serif); letter-spacing: -.045em; }
+.section-head p { font-size: .82rem; color: var(--muted); }
+.catalog { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 13px; }
+.product { min-width: 0; display: flex; flex-direction: column; background: var(--white); border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
+.cover { position: relative; aspect-ratio: 1.46; overflow: hidden; }
+.cover svg { display: block; width: 100%; height: 100%; }
+.clay { background: #dfb397; color: #773d30; }
+.print { background: #dbe1ac; color: #425736; }
+.ink { background: #cbd9df; color: #384957; }
+.product-no { position: absolute; right: 11px; bottom: 9px; color: currentColor; font-size: .72rem; font-weight: 700; letter-spacing: .1em; }
+.product-body { padding: 14px; display: flex; flex: 1; flex-direction: column; }
+.product-meta { display: flex; justify-content: space-between; gap: 5px; color: var(--muted); font-size: .74rem; }
+.product h3 { margin: 9px 0 6px; font: 400 1.5rem/1.05 var(--serif); letter-spacing: -.045em; }
+.product-description { color: var(--muted); font-size: .84rem; margin-bottom: 16px; }
+.product-price { margin-top: auto; font-size: 1rem; font-weight: 750; }
+.product-actions { display: grid; grid-template-columns: 1fr auto; gap: 6px; margin-top: 10px; }
+.button { display: inline-flex; align-items: center; justify-content: center; min-height: 41px; padding: 8px 12px; border-radius: 6px; border: 1px solid var(--dark); background: var(--dark); color: white; font-size: .85rem; font-weight: 650; text-decoration: none; text-align: center; }
+.button:hover:enabled { background: #394c3e; }
+.button.secondary { color: var(--ink); background: transparent; border-color: #aab09e; }
+.button.secondary:hover:enabled { background: #eef0e3; }
+.cart { min-width: 0; background: var(--white); border: 1px solid var(--line); border-radius: 10px; padding: 19px; }
+.cart-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.cart-head span { color: var(--muted); font-size: .79rem; }
+.cart-empty { color: var(--muted); padding: 21px 0; font-size: .9rem; }
+.cart-item { border-top: 1px solid var(--line); padding: 12px 0; }
+.cart-item:first-child { margin-top: 13px; }
+.line-head { display: flex; align-items: start; justify-content: space-between; gap: 10px; }
+.line-head h3 { font-size: .95rem; line-height: 1.35; }
+.line-head p, .gift-count { font-size: .77rem; color: var(--muted); }
+.stepper { display: flex; align-items: center; gap: 7px; }
+.stepper button { background: var(--paper); border: 1px solid var(--line); min-width: 33px; min-height: 33px; border-radius: 5px; color: var(--ink); }
+.stepper button:hover:enabled { background: #ebede0; }
+.stepper span { font-size: .85rem; font-weight: 650; min-width: 14px; text-align: center; }
+.recipients { display: grid; gap: 7px; margin-top: 9px; }
+.recipients label { display: grid; gap: 3px; font-size: .79rem; color: var(--muted); }
+.recipients input { width: 100%; min-width: 0; border-radius: 5px; border: 1px solid #b8bead; color: var(--ink); background: #fff; padding: 7px 9px; font-size: .88rem; }
+.cart-summary { border-top: 1px solid var(--line); padding-top: 12px; }
+.cart-total { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin: 3px 0 10px; font-size: .93rem; }
+.cart-summary .button { width: 100%; }
+.message { font-size: .82rem; color: #425641; }
+.message:empty { display: none; }
+.cart .message { margin: 9px 0; }
+.message.error { color: #8d2c28; }
+.orders { border-top: 1px solid var(--line); padding-block: 30px 44px; }
+.orders h2 { margin-bottom: 13px; }
+.empty-history { color: var(--muted); font-size: .94rem; }
+.order { background: var(--white); border: 1px solid var(--line); border-radius: 6px; margin-top: 8px; max-width: 740px; }
+.order summary { cursor: pointer; padding: 12px 15px; font-weight: 650; }
+.order-content { padding: 0 15px 13px; color: var(--muted); font-size: .9rem; }
+.order-content ul { margin: 5px 0; padding-left: 20px; }
+.guide { border-top: 1px solid var(--line); padding-block: 30px 44px; }
+.guide ol { display: grid; gap: 12px; max-width: 70ch; margin: 16px 0; padding-left: 22px; }
+.guide p { max-width: 70ch; }
+.footer { border-top: 1px solid var(--line); padding-block: 21px; color: var(--muted); font-size: .85rem; }
+.footer a { display: inline-block; margin-top: 8px; }
+dialog { width: min(450px, calc(100% - 26px)); border: 1px solid var(--line); padding: 23px; border-radius: 12px; color: var(--ink); background: var(--white); box-shadow: 0 15px 55px #19261936; max-height: 90dvh; }
+dialog::backdrop { background: #1c281db3; }
+dialog h2 { font: 400 2rem/1.1 var(--serif); letter-spacing: -.045em; margin: 8px 0 11px; }
+dialog p { font-size: .9rem; color: var(--muted); margin-bottom: 12px; }
+dialog .message { margin-top: 8px; }
+.receipt-lines { color: var(--muted); font-size: .88rem; padding-left: 21px; margin: 9px 0 15px; }
+.interrupt { display: flex; gap: 8px; padding: 11px; border-radius: 6px; background: #eff1e5; font-size: .87rem; align-items: start; margin: 13px 0; }
+.interrupt input { accent-color: #384b38; margin-top: 5px; }
+.dialog-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+@media (max-width: 1080px) {
+  .wrap { width: calc(100% - 48px); }
+  .catalog { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 780px) {
+  .hero-inner { grid-template-columns: 1fr; gap: 17px; padding-block: 32px 29px; }
+  .shop-layout { grid-template-columns: 1fr; gap: 23px; }
+  .cart { max-width: none; }
+}
+@media (max-width: 510px) {
+  .wrap { width: calc(100% - 32px); }
+  .nav { min-height: 62px; gap: 9px; }
+  .brand { font-size: 1rem; gap: 4px; }
+  .brand svg { flex-basis: 18px; }
+  .nav-links { gap: 9px; font-size: .8rem; }
+  .nav-links .workshop-link { display: none; }
+  .catalog { grid-template-columns: 1fr; }
+  .cover { aspect-ratio: 2.03; }
+  .product-body { padding: 14px; }
+  .product-actions { grid-template-columns: 1fr 1fr; }
+}
+.toast { position: fixed; z-index: 2; bottom: 14px; right: 14px; max-width: min(350px, calc(100% - 28px)); padding: 10px 14px; background: var(--dark); color: #fff; border-radius: 7px; box-shadow: 0 5px 20px #25291d29; font-size: .86rem; pointer-events: none; }
+</style>
+</head>
+<body>
+<a class="skip" href="#workshops">Skip to workshops</a>
+<header class="masthead">
+  <div class="wrap nav">
+    <a class="brand" href="#top">
+      <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true"><rect width="24" height="24" rx="6" fill="#26332a"/><path d="M6 16V8h12M10 16v-4h8" fill="none" stroke="#e9f19e" stroke-width="1.7" stroke-linecap="round"/></svg>
+      Fieldwork Studio
+    </a>
+    <nav class="nav-links" aria-label="Shop navigation">
+      <a class="workshop-link" href="#workshops">Workshops</a>
+      <a href="#orders">Orders</a>
+      <a href="#cart">Cart <span id="cart-count" class="nav-count">0</span></a>
+    </nav>
+  </div>
+</header>
+<main id="top">
+  <section class="hero" aria-labelledby="hero-title">
+    <div class="wrap hero-inner">
+      <div>
+        <div class="kicker">Fieldwork Studio · Digital passes</div>
+        <h1 id="hero-title">Workshop passes</h1>
+      </div>
+      <div>
+        <span class="demo-label">Demo shop · Simulated payments</span>
+        <p>Pick a hands-on workshop for yourself or give a pass to someone else.</p>
+        <a class="guide-link" href="#demo-guide">How the demo works</a>
+      </div>
+    </div>
+  </section>
+  <div class="wrap shop-layout">
+    <section id="workshops" aria-labelledby="workshops-title">
+      <div class="section-head">
+        <h2 id="workshops-title">Browse workshops</h2>
+        <p>Three small-group sessions</p>
+      </div>
+      <div class="catalog" id="catalog"></div>
+    </section>
+    <section class="cart" id="cart" aria-labelledby="cart-title">
+      <div class="cart-head">
+        <h2 id="cart-title">Your cart</h2>
+        <span id="gift-count" class="gift-count">0 of 5 gifts</span>
+      </div>
+      <div id="cart-lines"></div>
+      <div class="cart-summary">
+        <div class="cart-total"><span>Total</span><strong id="cart-total">$0.00</strong></div>
+        <p id="cart-message" class="message" role="status"></p>
+        <button class="button" id="checkout" type="button" disabled>Continue to checkout</button>
+      </div>
+    </section>
+  </div>
+  <section class="wrap orders" id="orders" aria-labelledby="orders-title">
+    <h2 id="orders-title">Order history</h2>
+    <div id="order-list"></div>
+  </section>
+  <section class="wrap guide" id="demo-guide" aria-labelledby="guide-title">
+    <h2 id="guide-title">Try gifting and checkout recovery</h2>
+    <ol>
+      <li><strong>Give a pass.</strong> Choose <strong>Gift</strong> on a workshop and enter one sample name per gift in <strong>Cart</strong>. Add another pass to see that the first name stays in place. The cart accepts up to five gifts across all workshops and requires a name for each gift before checkout.</li>
+      <li><strong>Interrupt checkout.</strong> Select <strong>Continue to checkout</strong>, then tick <strong>Simulate an interruption after payment</strong> and approve the demo payment. The shop saves the approval and the order reference in this browser before reloading.</li>
+      <li><strong>Check the recovered order.</strong> The confirmation uses the same reference and shows the gift recipients. Open <strong>Orders</strong> to find the single matching order. After you dismiss the confirmation, reloading keeps it closed and the order stays in history.</li>
+    </ol>
+    <p>To try a failed payment, choose <strong>Decline</strong> at checkout. The cart keeps the passes and recipient names so you can try again.</p>
+  </section>
+</main>
+<footer class="footer">
+  <div class="wrap">
+    <p>Fictional workshops by Fieldwork Studio. Use sample names. Cart and orders are saved in this browser.</p>
+    <a href="../#digital-pass-shop">Back to Neil’s portfolio</a>
+  </div>
+</footer>
+<p class="toast" id="toast" role="status" hidden></p>
+
+<dialog id="payment" aria-labelledby="payment-title">
+  <div class="kicker">Demo checkout</div>
+  <h2 id="payment-title">Review your payment</h2>
+  <p id="payment-reference"></p>
+  <ul class="receipt-lines" id="payment-lines"></ul>
+  <label class="interrupt">
+    <input type="checkbox" id="interrupt">
+    <span>Simulate an interruption after payment. The shop will reload before confirmation.</span>
+  </label>
+  <div class="dialog-actions">
+    <button class="button" type="button" id="approve">Approve demo payment</button>
+    <button class="button secondary" type="button" id="decline">Decline</button>
+    <button class="button secondary" type="button" id="cancel">Cancel</button>
+  </div>
+  <p id="payment-message" class="message" role="status"></p>
+</dialog>
+
+<dialog id="receipt" aria-labelledby="receipt-title">
+  <div class="kicker" id="receipt-label">Demo payment approved</div>
+  <h2 id="receipt-title">Order confirmed</h2>
+  <p id="receipt-reference"></p>
+  <ul class="receipt-lines" id="receipt-lines"></ul>
+  <div class="dialog-actions">
+    <button class="button" type="button" id="done">Done</button>
+    <button class="button secondary" type="button" id="view-orders">View order history</button>
+  </div>
+  <p id="receipt-message" class="message" role="status"></p>
+</dialog>
+
+<script>
+const CATALOG = [
+  { id: 'clay', name: 'Clay by hand', category: 'Ceramics', duration: '2 hours', price: 4800,
+    description: 'Shape a small vessel and learn the basics of working with clay.', color: 'clay' },
+  { id: 'print', name: 'Print on paper', category: 'Printmaking', duration: '2 hours', price: 4200,
+    description: 'Carve a simple block and pull a small edition of your own prints.', color: 'print' },
+  { id: 'ink', name: 'Ink and line', category: 'Drawing', duration: '90 minutes', price: 3600,
+    description: 'Try loose linework, brush marks, and a few ways to sketch from life.', color: 'ink' },
+];
+const GIFT_LIMIT = 5;
+
+function newShop() {
+  return { version: 1, cart: [], checkout: null, orders: [] };
+}
+
+function workshop(productId) {
+  return CATALOG.find(product => product.id === productId);
+}
+
+function lineKey(productId, gift) {
+  return productId + (gift ? '-gift' : '-self');
+}
+
+function giftCount(cart) {
+  return cart.reduce((count, line) => count + (line.gift ? line.quantity : 0), 0);
+}
+
+function total(cart) {
+  return cart.reduce((sum, line) => sum + workshop(line.productId).price * line.quantity, 0);
+}
+
+function updateQuantity(shop, productId, gift, change) {
+  if (shop.checkout) throw new Error('Finish or cancel the current checkout to edit your cart.');
+  const key = lineKey(productId, gift);
+  const line = shop.cart.find(item => lineKey(item.productId, item.gift) === key);
+  const quantity = (line?.quantity ?? 0) + change;
+  if (gift && change > 0 && giftCount(shop.cart) + change > GIFT_LIMIT) {
+    throw new Error('You can gift up to five passes per order. Your cart is still saved.');
+  }
+  if (quantity <= 0) {
+    shop.cart = shop.cart.filter(item => item !== line);
+    return;
+  }
+  const recipients = gift ? Array.from({ length: quantity }, (_, index) => line?.recipients[index] ?? '') : [];
+  if (line) {
+    line.quantity = quantity;
+    line.recipients = recipients;
+  } else {
+    shop.cart.push({ productId, gift, quantity, recipients });
+  }
+}
+
+function setRecipient(shop, key, index, name) {
+  if (shop.checkout) return;
+  const line = shop.cart.find(item => lineKey(item.productId, item.gift) === key);
+  if (line?.gift && index >= 0 && index < line.quantity) line.recipients[index] = name;
+}
+
+function beginCheckout(shop, id) {
+  if (shop.checkout) return;
+  if (!shop.cart.length) throw new Error('Add a workshop pass to continue.');
+  if (shop.cart.some(line => line.recipients.some(name => !name.trim()))) {
+    throw new Error('Enter a sample name for each gift recipient.');
+  }
+  shop.checkout = { id, status: 'awaiting', lines: structuredClone(shop.cart) };
+}
+
+function resolvePayment(shop, id, outcome) {
+  if (shop.checkout?.id !== id || shop.checkout.status !== 'awaiting') return false;
+  if (outcome === 'paid') {
+    shop.checkout.status = 'paid';
+  } else {
+    shop.checkout = null;
+  }
+  return true;
+}
+
+function settlePaidCheckout(shop, id, recovered, date) {
+  const checkout = shop.checkout;
+  if (checkout?.id !== id || checkout?.status !== 'paid') return false;
+  if (!shop.orders.some(order => order.id === checkout.id)) {
+    shop.orders.unshift({ id: checkout.id, lines: checkout.lines, date, recovered, acknowledged: false });
+  }
+  shop.cart = [];
+  shop.checkout = null;
+  return true;
+}
+
+function acknowledgeOrder(shop, id) {
+  const order = shop.orders.find(item => item.id === id);
+  if (order) order.acknowledged = true;
+}
+</script>
+<script>
+const ART = {
+  clay: '<path d="M85 103c-13-14-18-42-7-58 8-13 23-17 32-28h29c10 11 24 15 32 28 11 16 6 44-7 58-13 15-66 15-79 0Z" fill="currentColor"/><path d="M111 18h27M92 57c17-6 47-6 64 0M87 70c21-6 55-6 75 0M91 86c18-4 48-4 66 0" fill="none" stroke="#f5d9c5" stroke-width="2"/><ellipse cx="124" cy="20" rx="17" ry="4" fill="#ae735b"/><path d="M31 118h185M42 107h17m132 0h15" stroke="currentColor" opacity=".45"/>',
+  print: '<g transform="translate(124 67) rotate(-12)"><rect x="-48" y="-52" width="96" height="104" rx="2" fill="#f3f0d6"/><path d="M-33 30c8-40 28-58 63-66C25-5 7 27-33 30Z" fill="currentColor"/><path d="M-27 25 24-29m-34 39-5-20m15 10L21 0m-7-12-3-14" fill="none" stroke="#dbe1ac" stroke-width="2"/></g><path d="M40 110h24m122-85h24m-17 8h10" fill="none" stroke="currentColor" opacity=".5"/>',
+  ink: '<path d="M31 92c27-35 39-59 61-53 13 4-1 53 10 57 14 6 35-71 51-66 17 5-10 67 10 68 13 1 28-28 48-47" fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round"/><path d="M49 104c35-6 52-10 75-9 26 1 47 7 71 6" fill="none" stroke="currentColor" stroke-width="2" opacity=".5"/><circle cx="71" cy="24" r="3" fill="currentColor"/><circle cx="185" cy="39" r="4" fill="currentColor"/>',
+};
+
+const STORAGE_KEY = 'fieldwork-pass-shop-v1';
+const $ = id => document.getElementById(id);
+const currency = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' });
+const calendar = new Intl.DateTimeFormat('en', { dateStyle: 'medium', timeZone: 'Asia/Manila' });
+let shop = newShop();
+let shownPayment;
+let shownReceipt;
+let toastTimer;
+
+function money(cents) {
+  return currency.format(cents / 100);
+}
+
+function escapeText(value) {
+  return String(value).replace(/[&<>"']/g, character => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;',
+  })[character]);
+}
+
+function readShop() {
+  const value = localStorage.getItem(STORAGE_KEY);
+  if (!value) return newShop();
+  const data = JSON.parse(value);
+  if (data.version !== 1 || !Array.isArray(data.cart) || !Array.isArray(data.orders)) {
+    throw new Error('This browser has an unreadable shop session.');
+  }
+  return data;
+}
+
+async function commit(change, render = true) {
+  const save = () => {
+    const latest = readShop();
+    const result = change(latest);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(latest));
+    shop = latest;
+    return result;
+  };
+  const result = navigator.locks ? await navigator.locks.request(STORAGE_KEY, save) : save();
+  if (render) renderShop();
+  return result;
+}
+
+function message(id, text = '', error = false) {
+  $(id).textContent = text;
+  $(id).classList.toggle('error', error);
+}
+
+function toast(text) {
+  const element = $('toast');
+  clearTimeout(toastTimer);
+  element.textContent = text;
+  element.hidden = false;
+  toastTimer = setTimeout(() => { element.hidden = true; }, 3800);
+}
+
+function renderCatalog() {
+  $('catalog').innerHTML = CATALOG.map((product, index) =>
+    '<article class="product"><div class="cover ' + product.color + '">' +
+      '<svg viewBox="0 0 248 136" aria-hidden="true">' + ART[product.id] + '</svg>' +
+      '<span class="product-no" aria-hidden="true">0' + (index + 1) + '</span></div>' +
+    '<div class="product-body"><div class="product-meta"><span>' + product.category +
+      '</span><span>' + product.duration + '</span></div>' +
+      '<h3>' + product.name + '</h3><p class="product-description">' + product.description + '</p>' +
+      '<p class="product-price">' + money(product.price) + '</p><div class="product-actions">' +
+        '<button class="button" type="button" data-product="' + product.id + '" data-gift="false" aria-label="Add ' + product.name + '">Add pass</button>' +
+        '<button class="button secondary" type="button" data-product="' + product.id + '" data-gift="true" aria-label="Gift ' + product.name + '">Gift</button>' +
+      '</div></div></article>'
+  ).join('');
+}
+
+function renderCart() {
+  const focus = document.activeElement;
+  const focusKey = focus?.dataset.stepKey;
+  const focusChange = focus?.dataset.change;
+  const locked = shop.checkout ? ' disabled' : '';
+  $('cart-count').textContent = shop.cart.reduce((count, line) => count + line.quantity, 0);
+  $('gift-count').textContent = giftCount(shop.cart) + ' of ' + GIFT_LIMIT + ' gifts';
+  $('cart-total').textContent = money(total(shop.cart));
+  $('checkout').disabled = shop.cart.length === 0;
+  $('checkout').textContent = shop.checkout ? 'Resume checkout' : 'Continue to checkout';
+  $('cart-lines').innerHTML = shop.cart.length ? shop.cart.map(line => {
+    const product = workshop(line.productId);
+    const key = lineKey(line.productId, line.gift);
+    const itemName = product.name + (line.gift ? ' gift' : ' pass');
+    const inputs = line.recipients.map((name, index) =>
+      '<label>Recipient ' + (index + 1) + '<input type="text" maxlength="60" autocomplete="off" placeholder="Sample name" aria-label="' +
+        escapeText(product.name) + ' recipient ' + (index + 1) + '" data-key="' + key + '" data-index="' + index +
+        '" value="' + escapeText(name) + '"' + locked + '></label>'
+    ).join('');
+    return '<article class="cart-item"><div class="line-head"><div><h3>' + product.name + '</h3><p>' +
+      (line.gift ? 'Gift pass' : 'For you') + ' · ' + money(product.price * line.quantity) +
+      '</p></div><div class="stepper">' +
+      '<button type="button" data-step-key="' + key + '" data-change="-1" aria-label="Decrease ' + itemName + ' quantity"' + locked + '>−</button>' +
+      '<span>' + line.quantity + '</span>' +
+      '<button type="button" data-step-key="' + key + '" data-change="1" aria-label="Increase ' + itemName + ' quantity"' + locked + '>+</button>' +
+      '</div></div>' + (inputs ? '<div class="recipients">' + inputs + '</div>' : '') + '</article>';
+  }).join('') : '<p class="cart-empty">Add a pass or choose Gift to enter a recipient.</p>';
+  if (focusKey) {
+    const button = Array.from($('cart-lines').querySelectorAll('[data-step-key]')).find(
+      candidate => candidate.dataset.stepKey === focusKey && candidate.dataset.change === focusChange
+    );
+    (button ?? $('catalog').querySelector('button'))?.focus({ preventScroll: true });
+  }
+}
+
+function lineDescription(line) {
+  return line.quantity + ' × ' + workshop(line.productId).name +
+    (line.gift ? ' · Gift for ' + line.recipients.map(name => escapeText(name.trim())).join(', ') : '');
+}
+
+function receiptLines(lines) {
+  return lines.map(line => '<li>' + lineDescription(line) + '</li>').join('');
+}
+
+function renderOrders() {
+  const expanded = new Set(Array.from($('order-list').querySelectorAll('details[open]'), item => item.dataset.id));
+  $('order-list').innerHTML = shop.orders.length ? shop.orders.map(order =>
+    '<details class="order" data-id="' + escapeText(order.id) + '"' + (expanded.has(order.id) ? ' open' : '') +
+    '><summary>Order ' + escapeText(order.id) + ' · ' + money(total(order.lines)) + '</summary>' +
+    '<div class="order-content"><p>' + calendar.format(new Date(order.date)) + ' · Demo payment approved' +
+    (order.recovered ? ' · Recovered after interruption' : '') + '</p><ul>' + receiptLines(order.lines) +
+    '</ul></div></details>'
+  ).join('') : '<p class="empty-history">Completed demo orders will appear here.</p>';
+}
+
+function renderShop() {
+  renderCart();
+  renderOrders();
+}
+
+function showPayment() {
+  const checkout = shop.checkout;
+  if (!checkout || checkout.status !== 'awaiting') return;
+  shownPayment = checkout.id;
+  $('payment-reference').textContent = 'Checkout ' + checkout.id + ' · ' + money(total(checkout.lines));
+  $('payment-lines').innerHTML = receiptLines(checkout.lines);
+  $('interrupt').checked = false;
+  message('payment-message');
+  if (!$('payment').open) $('payment').showModal();
+}
+
+function showReceipt() {
+  const order = shop.orders.find(item => !item.acknowledged);
+  if (!order || $('receipt').open) return;
+  shownReceipt = order.id;
+  $('receipt-label').textContent = order.recovered ? 'Recovered after interruption' : 'Demo payment approved';
+  $('receipt-reference').textContent = 'Order ' + order.id + ' · ' + money(total(order.lines));
+  $('receipt-lines').innerHTML = receiptLines(order.lines);
+  message('receipt-message');
+  $('receipt').showModal();
+}
+
+async function paymentOutcome(outcome) {
+  const id = shownPayment;
+  const interrupt = outcome === 'paid' && $('interrupt').checked;
+  try {
+    const accepted = await commit(state => resolvePayment(state, id, outcome));
+    if (!accepted) {
+      $('payment').close();
+      showReceipt();
+      return;
+    }
+    if (interrupt) {
+      location.reload();
+      return;
+    }
+    if (outcome === 'paid') await commit(state => settlePaidCheckout(state, id, false, new Date().toISOString()));
+    $('payment').close();
+    if (outcome === 'paid') showReceipt();
+    else message('cart-message', outcome === 'declined' ? 'Demo payment declined. Your cart is saved.' : 'Checkout canceled. Your cart is saved.');
+  } catch (error) {
+    message('payment-message', error.message, true);
+  }
+}
+
+async function closeReceipt(openHistory) {
+  try {
+    await commit(state => acknowledgeOrder(state, shownReceipt));
+    $('receipt').close();
+    if (openHistory) {
+      const order = Array.from($('order-list').children).find(item => item.dataset.id === shownReceipt);
+      if (order) {
+        order.open = true;
+        order.scrollIntoView({ block: 'center' });
+        order.querySelector('summary').focus({ preventScroll: true });
+      }
+    }
+  } catch (error) {
+    message('receipt-message', error.message, true);
+  }
+}
+
+$('catalog').addEventListener('click', async event => {
+  const button = event.target.closest('[data-product]');
+  if (!button) return;
+  try {
+    await commit(state => updateQuantity(state, button.dataset.product, button.dataset.gift === 'true', 1));
+    message('cart-message');
+    toast(workshop(button.dataset.product).name + ' added to your cart.');
+  } catch (error) {
+    toast(error.message);
+    message('cart-message', error.message, true);
+  }
+});
+
+$('cart-lines').addEventListener('click', async event => {
+  const button = event.target.closest('[data-step-key]');
+  if (!button) return;
+  try {
+    await commit(state => {
+      const line = state.cart.find(item => lineKey(item.productId, item.gift) === button.dataset.stepKey);
+      if (line) updateQuantity(state, line.productId, line.gift, Number(button.dataset.change));
+    });
+    message('cart-message');
+  } catch (error) {
+    message('cart-message', error.message, true);
+  }
+});
+
+$('cart-lines').addEventListener('input', async event => {
+  const input = event.target;
+  if (!input.matches('input[data-key]')) return;
+  const name = input.value;
+  try {
+    await commit(state => setRecipient(state, input.dataset.key, Number(input.dataset.index), name), false);
+    message('cart-message');
+  } catch (error) {
+    message('cart-message', error.message, true);
+  }
+});
+
+$('checkout').addEventListener('click', async () => {
+  try {
+    const id = 'FW-' + Array.from(crypto.getRandomValues(new Uint8Array(6)), byte => byte.toString(16).padStart(2, '0')).join('').toUpperCase();
+    await commit(state => {
+      settlePaidCheckout(state, state.checkout?.id, true, new Date().toISOString());
+      if (!state.orders.some(order => !order.acknowledged)) beginCheckout(state, id);
+    });
+    message('cart-message');
+    showPayment();
+    showReceipt();
+  } catch (error) {
+    message('cart-message', error.message, true);
+    Array.from($('cart-lines').querySelectorAll('input')).find(input => !input.value.trim())?.focus();
+  }
+});
+
+for (const [button, outcome] of [['approve', 'paid'], ['decline', 'declined'], ['cancel', 'canceled']]) {
+  $(button).addEventListener('click', () => paymentOutcome(outcome));
+}
+$('payment').addEventListener('cancel', event => { event.preventDefault(); paymentOutcome('canceled'); });
+$('done').addEventListener('click', () => closeReceipt(false));
+$('view-orders').addEventListener('click', () => closeReceipt(true));
+$('receipt').addEventListener('cancel', event => { event.preventDefault(); closeReceipt(false); });
+
+async function restoreShop(recover = true) {
+  try {
+    shop = readShop();
+    if (recover && shop.checkout?.status === 'paid') {
+      const id = shop.checkout.id;
+      await commit(state => settlePaidCheckout(state, id, true, new Date().toISOString()));
+    } else {
+      renderShop();
+    }
+    if ($('payment').open && shop.checkout?.id !== shownPayment) $('payment').close();
+    if ($('receipt').open && !shop.orders.some(order => order.id === shownReceipt && !order.acknowledged)) $('receipt').close();
+    if (recover) showReceipt();
+  } catch {
+    message('cart-message', 'The shop could not read browser storage. Try opening it in a browser that allows local storage.', true);
+  }
+}
+renderCatalog();
+restoreShop();
+window.addEventListener('storage', event => { if (event.key === STORAGE_KEY) restoreShop(false); });
+</script>
+</body>
+</html>
